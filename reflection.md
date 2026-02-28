@@ -1,43 +1,61 @@
-# 💭 Reflection: Game Glitch Investigator
+﻿# Reflection: Game Glitch Investigator
 
-Answer each question in 3 to 5 sentences. Be specific and honest about what actually happened while you worked. This is about your process, not trying to sound perfect.
+## What I Did
 
-## 1. What was broken when you started?
-
-- What did the game look like the first time you ran it?
-- List at least two concrete bugs you noticed at the start  
-  (for example: "the secret number kept changing" or "the hints were backwards").
+Investigated an AI-generated Python guessing game, found 8 bugs, fixed them,
+refactored all logic into logic_utils.py, and wrote 16 automated pytest tests.
 
 ---
 
-## 2. How did you use AI as a teammate?
+## Bugs Found and Fixed
 
-- Which AI tools did you use on this project (for example: ChatGPT, Gemini, Copilot)?
-- Give one example of an AI suggestion that was correct (including what the AI suggested and how you verified the result).
-- Give one example of an AI suggestion that was incorrect or misleading (including what the AI suggested and how you verified the result).
-
----
-
-## 3. Debugging and testing your fixes
-
-- How did you decide whether a bug was really fixed?
-- Describe at least one test you ran (manual or using pytest)  
-  and what it showed you about your code.
-- Did AI help you design or understand any tests? How?
+| # | File | Bug Type | Description |
+|---|------|----------|-------------|
+| 1 | app.py | Logic | Hard difficulty range (1-50) was EASIER than Normal (1-100) |
+| 2 | app.py | Logic | Hint messages reversed: said "Go HIGHER" when guess was too high |
+| 3 | app.py | Runtime | Secret cast to str on even attempts, broke comparison logic |
+| 4 | app.py | Logic | Wrong guesses on even attempts gave +5 points (should lose points) |
+| 5 | app.py | Logic | attempts initialized to 1 instead of 0 |
+| 6 | app.py | Logic | New Game always used range 1-100, ignored selected difficulty |
+| 7 | app.py | Logic | Info text hardcoded "between 1 and 100" regardless of difficulty |
+| 8 | tests/ | Test | Tests expected string return but check_guess returns a tuple |
 
 ---
 
-## 4. What did you learn about Streamlit and state?
+## When I Accepted, Modified, or Rejected AI Suggestions
 
-- In your own words, explain why the secret number kept changing in the original app.
-- How would you explain Streamlit "reruns" and session state to a friend who has never used Streamlit?
-- What change did you make that finally gave the game a stable secret number?
+**Accepted:**
+- Overall Streamlit UI structure was reasonable
+- parse_guess function logic was correct
+- Separating code into functions was a good pattern
+
+**Modified:**
+- Hint messages needed to be reversed
+- Hard difficulty range needed rethinking (bigger = harder)
+- Score function: removed the even/odd trick that added complexity with no benefit
+
+**Rejected:**
+- The string comparison trick on even attempts looked intentional but was completely broken.
+  The AI appeared to be adding "variety" but instead created a silent bug where hints
+  were randomly wrong every other guess.
 
 ---
 
-## 5. Looking ahead: your developer habits
+## Most Interesting Bug
 
-- What is one habit or strategy from this project that you want to reuse in future labs or projects?
-  - This could be a testing habit, a prompting strategy, or a way you used Git.
-- What is one thing you would do differently next time you work with AI on a coding task?
-- In one or two sentences, describe how this project changed the way you think about AI generated code.
+Bug #3 (string comparison) was hardest to catch because it looked deliberate.
+The code cast secret to str on even attempts, causing:
+  "6" > "50" = True  (string comparison, wrong!)
+  6 > 50 = False     (integer comparison, correct)
+
+This meant every other guess gave a wrong hint with no error message.
+
+**Lesson:** AI code can appear intentional even when it is wrong.
+Always test edge cases, not just read the code.
+
+---
+
+## Conclusion
+
+AI is a fast first draft, not a final answer.
+The developers job shifts from "write everything" to "verify everything."
